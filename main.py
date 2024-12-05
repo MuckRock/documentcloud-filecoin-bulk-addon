@@ -21,7 +21,7 @@ class FilecoinBulkUpload(AddOn):
         proj = self.data["project_id"]
         batch_sz = self.data["batch_size"]
         batch_num = math.ceil(batch_sz / 25)
-
+        print(batch_sz)
         # Search for all documents in the current project that have not yet been uploaded.
         documents = self.client.documents.search(f"+project:{proj} -data_ipfsUrl:*")
         for i in range(batch_num):
