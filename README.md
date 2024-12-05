@@ -3,6 +3,6 @@
 
 [Please see the Add-On documentation](https://github.com/MuckRock/documentcloud-hello-world-addon/wiki/)
 
-# DocumentCloud Crest Filecoin Add-On
+# IPFS/Filecoin Batch Uploader
 
-This is a one off Add-On to add all of the CREST documents to Filecoin over time.
+This Add-On allows you to upload large document sets to the IPFS/Filecoin networks in scheduled batches. 
