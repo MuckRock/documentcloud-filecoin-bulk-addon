@@ -1,26 +1,33 @@
+""" 
+DocumentCloud Add-On that allows you to upload documents
+to the IPFS/Filecoin networks in batches """
+import math
 from itertools import islice
 
 from documentcloud.addon import AddOn
 
-PROJ_ID = 209284
 FILECOIN_ID = 104
-BATCH_SIZE = 25
-BATCH_NUM = 2
 
 
-class CrestFilecoin(AddOn):
+class FilecoinBulkUpload(AddOn):
+    """
+    Splits docs into 25 doc batches and uploads the new batch to filecoin
+    """
+
     def main(self):
+        """Retrieves our vars from config.yaml, searches for not uploaded docs,
+        and uploads them
+        """
+        proj = self.data["project_id"]
+        batch_sz = self.data["batch_size"]
+        batch_num = math.ceil(batch_sz / 25)
 
-        # Search for all documents in the CREST project which do not yet have an
-        # IPFS URL.  The IPFS URL metadata will be set by the Filecoin Add-On
-        # after it has been uploaded to Filecoin via Web3 Storage
-        documents = self.client.documents.search(
-            f"+project:{PROJ_ID} -data_ipfsUrl:*"
-        )
-        for i in range(BATCH_NUM):
+        # Search for all documents in the current project that have not yet been uploaded.
+        documents = self.client.documents.search(f"+project:{proj} -data_ipfsUrl:*")
+        for i in range(batch_num):
             # Pull out the IDs for a batch of the documents
             doc_ids = [
-                d.id for d in islice(documents, i * BATCH_SIZE, (i + 1) * BATCH_SIZE)
+                d.id for d in islice(documents, i * batch_sz, (i + 1) * batch_sz)
             ]
             # Run the Filecoin Add-On for this batch of documents
             self.client.post(
@@ -35,4 +42,4 @@ class CrestFilecoin(AddOn):
 
 
 if __name__ == "__main__":
-    CrestFilecoin().main()
+    FilecoinBulkUpload().main()

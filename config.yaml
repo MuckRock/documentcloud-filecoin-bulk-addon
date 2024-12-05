@@ -1,11 +1,20 @@
-title: Crest Filecoin
-description: Add the Crest documents to Filecoin
+title: IPFS/Filecoin Batch Uploader
+description: Upload large sets of documents in scheduled batches to the IPFS/Filecoin networks. 
 type: object
 documents: []
 properties:
-  title:
-    title: Title
-    type: string
+  project_id:
+    title: Project ID
+    type: integer
+    description: Project ID of the project of documents you would like to upload in bulk. 
+  batch_size:
+    title: Batch size
+    type: integer
+    description: The number of documents you would like to upload during each run, higher numbers tend to increase failure rates.
+    default: 25
+required:
+  - project_id
+  - batch_size
 eventOptions:
   name: title
   events:
