@@ -18,6 +18,7 @@ class FilecoinBulkUpload(AddOn):
         """Retrieves our vars from config.yaml, searches for not uploaded docs,
         and uploads them
         """
+        self.client.session.headers.update({'User-Agent': 'IPFS Batch Uploader Add-On'})
         proj = self.data["project_id"]
         batch_sz = self.data["batch_size"]
         batch_num = math.ceil(batch_sz / 25)
