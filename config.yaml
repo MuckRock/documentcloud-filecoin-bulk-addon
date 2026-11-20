@@ -11,7 +11,7 @@ properties:
     title: Batch size
     type: integer
     description: The number of documents you would like to upload during each run, higher numbers tend to increase failure rates.
-    default: 25
+    default: 50
 required:
   - project_id
   - batch_size
