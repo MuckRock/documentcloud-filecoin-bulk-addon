@@ -5,4 +5,5 @@
 
 # IPFS/Filecoin Batch Uploader
 
-This Add-On allows you to upload large document sets to the IPFS/Filecoin networks in scheduled batches. 
+This Add-On allows you to upload large document sets to the IPFS/Filecoin networks in scheduled batches of (up to) 50 documents. 
+It can be set to upload up to 50 documents at a time on an hourly, daily or weekly basis. 
