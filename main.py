@@ -1,45 +1,43 @@
-""" 
+"""
 DocumentCloud Add-On that allows you to upload documents
 to the IPFS/Filecoin networks in batches """
-import math
 from itertools import islice
 
 from documentcloud.addon import AddOn
 
 FILECOIN_ID = 104
+BATCH_SIZE = 50
 
 
 class FilecoinBulkUpload(AddOn):
-    """
-    Splits docs into 25 doc batches and uploads the new batch to filecoin
-    """
+    """Sends up to 50 not-yet-uploaded docs to the Push to IPFS Add-On"""
 
     def main(self):
-        """Retrieves our vars from config.yaml, searches for not uploaded docs,
-        and uploads them
-        """
+        """Searches for not-yet-uploaded docs in the project and uploads one batch"""
         self.client.session.headers.update({'User-Agent': 'IPFS Batch Uploader Add-On'})
         proj = self.data["project_id"]
-        batch_sz = self.data["batch_size"]
-        batch_num = math.ceil(batch_sz / 25)
-        print(batch_sz)
-        # Search for all documents in the current project that have not yet been uploaded.
+        # Search for all documents in the current project that have not yet been uploaded
         documents = self.client.documents.search(f"+project:{proj} -data_ipfsUrl:* +status:success")
-        for i in range(batch_num):
-            # Pull out the IDs for a batch of the documents
-            doc_ids = [
-                d.id for d in islice(documents, i * batch_sz, (i + 1) * batch_sz)
-            ]
-            # Run the Filecoin Add-On for this batch of documents
-            self.client.post(
-                "addon_runs/",
-                json={
-                    "addon": FILECOIN_ID,
-                    "parameters": {},
-                    "documents": doc_ids,
-                    "dismissed": True,
-                },
-            )
+
+        doc_ids = []
+        for doc in islice(documents, BATCH_SIZE):
+            doc_ids.append(doc.id)
+
+        if not doc_ids:
+            self.set_message("No documents left to upload in this project.")
+            return
+
+        # Run the Push to IPFS Add-On for this batch of documents
+        self.client.post(
+            "addon_runs/",
+            json={
+                "addon": FILECOIN_ID,
+                "parameters": {},
+                "documents": doc_ids,
+                "dismissed": True,
+            },
+        )
+        self.set_message(f"Sent {len(doc_ids)} documents to Push to IPFS.")
 
 
 if __name__ == "__main__":

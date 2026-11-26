@@ -7,14 +7,8 @@ properties:
     title: Project ID
     type: integer
     description: Project ID of the project of documents you would like to upload in bulk. 
-  batch_size:
-    title: Batch size
-    type: integer
-    description: The number of documents you would like to upload during each run. Higher numbers tend to increase failure rates. 
-    default: 50
 required:
   - project_id
-  - batch_size
 eventOptions:
   name: title
   events:
